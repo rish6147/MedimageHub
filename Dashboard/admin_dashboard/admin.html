@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5f7fa;
+            --text-color: #333;
+            --sidebar-color: #2c3e50;
+            --hover-color: #3498db;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--secondary-color);
+            display: flex;
+            height: 100vh;
+            color: var(--text-color);
+        }
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-color);
+            color: #fff;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        .sidebar.collapsed {
+            width: 80px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+        }
+        .logo i {
+            margin-right: 10px;
+        }
+        .menu-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .menu-item:hover {
+            background-color: var(--hover-color);
+        }
+        .menu-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        .menu-item span {
+            transition: opacity 0.3s;
+        }
+        .sidebar.collapsed .menu-item span {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+        .header {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .tile-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .tile {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        .tile-header {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        .tile-content {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+        .button {
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+        }
+        .button:hover {
+            background-color: var(--hover-color);
+        }
+        .button i {
+            margin-right: 5px;
+        }
+        #toggleSidebar {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .chart-container {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .button.reject {
+            background-color: #e74c3c;
+            margin-left: 10px;
+        }
+        .button.reject:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <i class="fas fa-hospital"></i>
+            <span>MEDIMAGE HUB (Admin)</span>
+        </div>
+        <div class="menu-item" onclick="showSection('dashboard')">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </div>
+        <div class="menu-item" onclick="showSection('manageDoctors')">
+            <i class="fas fa-user-md"></i>
+            <span>Manage Doctors</span>
+        </div>
+        <div class="menu-item" onclick="showSection('managePatients')">
+            <i class="fas fa-users"></i>
+            <span>Manage Patients</span>
+        </div>
+        <div class="menu-item" onclick="showSection('reports')">
+            <i class="fas fa-chart-bar"></i>
+            <span>Reports</span>
+        </div>
+        <div class="menu-item" onclick="showSection('settings')">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <button id="toggleSidebar"><i class="fas fa-bars"></i></button>
+            <span id="sectionTitle">MEDIMAGE HUB</span>
+            <span></span> <!-- Empty span for flex spacing -->
+        </div>
+        <div id="dashboard" class="section">
+            <div class="tile-container">
+                <div class="tile">
+                    <div class="tile-header"><i class="fas fa-user-md"></i> Pending Doctor Registrations</div>
+                    <div class="tile-content">You have 3 pending doctor registrations.</div>
+                    <button class="button" onclick="showSection('doctorRegistrations')">
+                        <i class="fas fa-eye"></i> View Registrations
+                    </button>
+                </div>
+                <div class="tile">
+                    <div class="tile-header"><i class="fas fa-users"></i> Patient Statistics</div>
+                    <div class="tile-content">Total Patients: 1,234<br>New Patients (This Week): 45</div>
+                    <button class="button" onclick="showSection('patientStats')">
+                        <i class="fas fa-chart-line"></i> View Details
+                    </button>
+                </div>
+                <div class="tile">
+                    <div class="tile-header"><i class="fas fa-calendar-check"></i> Appointments Today</div>
+                    <div class="tile-content">Total Appointments: 78<br>Available Slots: 12</div>
+                    <button class="button">
+                        <i class="fas fa-list"></i> View Schedule
+                    </button>
+                </div>
+                <div class="tile">
+                    <div class="tile-header"><i class="fas fa-procedures"></i> Bed Occupancy</div>
+                    <div class="tile-content">Occupied Beds: 145<br>Available Beds: 55</div>
+                    <button class="button">
+                        <i class="fas fa-info-circle"></i> More Info
+                    </button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="patientChart"></canvas>
+            </div>
+        </div>
+        <div id="doctorRegistrations" class="section" style="display:none;">
+            <h2>Pending Doctor Registrations</h2>
+            <div class="tile-container" id="doctorRegistrationTiles"></div>
+        </div>
+        <div id="manageDoctors" class="section" style="display:none;">
+            <h2>Manage Doctors</h2>
+            <div class="tile-container">
+                <div class="tile">
+                    <div class="tile-header"><i class="fas fa-user-minus"></i> Remove Existing Doctors</div>
+                    <div class="tile-content">Manage the list of registered doctors.</div>
+                    <button class="button" onclick="showSection('removeDoctors')">
+                        <i class="fas fa-trash-alt"></i> Remove Doctors
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="managePatients" class="section" style="display:none;">
+            <h2>Manage Patients</h2>
+            <div class="tile-container">
+                <div class="tile">
+                    <div class="tile-header"><i class="fas fa-user-minus"></i> Remove Patients from Database</div>
+                    <div class="tile-content">Manage the patient database.</div>
+                    <button class="button" onclick="showSection('removePatients')">
+                        <i class="fas fa-trash-alt"></i> Remove Patients
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="reports" class="section" style="display:none;">
+            <h2>Reports</h2>
+            <div class="tile-container">
+                <div class="tile">
+                    <div class="tile-header"><i class="fas fa-file-alt"></i> Generate Reports</div>
+                    <div class="tile-content">Create various hospital reports.</div>
+                    <button class="button">
+                        <i class="fas fa-download"></i> Generate Report
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="settings" class="section" style="display:none;">
+            <h2>Settings</h2>
+            <div class="tile-container">
+                <div class="tile">
+                    <div class="tile-header"><i class="fas fa-user-cog"></i> Account Settings</div>
+                    <div class="tile-content">Manage your admin account settings.</div>
+                    <button class="button">
+                        <i class="fas fa-edit"></i> Edit Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to show the selected section
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            // Show the selected section
+            document.getElementById(sectionId).style.display = 'block';
+            // Update section title
+            document.getElementById('sectionTitle').textContent = sectionId.charAt(0).toUpperCase() + sectionId.slice(1);
+    
+            // If doctorRegistrations section is selected, load the pending doctors
+            if (sectionId === 'doctorRegistrations') {
+                loadDoctorRegistrations();
+            }
+        }
+    
+        // Function to load pending doctor registrations from the backend
+        async function loadDoctorRegistrations() {
+            const container = document.getElementById('doctorRegistrationTiles');
+            container.innerHTML = ''; // Clear existing tiles
+    
+            try {
+                const response = await fetch('http://localhost:5000/api/users',); // Ensure this endpoint is correct
+                if (!response.ok) {
+                    throw new Error('Failed to load doctor registrations');
+                }
+    
+                const pendingDoctors = await response.json();
+    
+                // Iterate over the doctor data and dynamically create tiles
+                pendingDoctors.forEach(doctor => {
+                    const tile = document.createElement('div');
+                    tile.className = 'tile';
+                    tile.innerHTML = `
+                        <div class="tile-header">${doctor.name} (ID: ${doctor.uniqueId})</div>
+                        <div class="tile-content">
+                            Specialty: ${doctor.specialty}
+                        </div>
+                        <button class="button" onclick="authorizeDoctor('${doctor.uniqueId}')">
+                            <i class="fas fa-check"></i> Authorize
+                        </button>
+                        <button class="button reject" onclick="rejectDoctor('${doctor.uniqueId}')">
+                            <i class="fas fa-times"></i> Reject
+                        </button>
+                    `;
+                    container.appendChild(tile);
+                });
+            } catch (error) {
+                console.error('Error loading doctor registrations:', error);
+                alert('Failed to load doctor registrations. Please try again later.');
+            }
+        }
+    
+        // Function to authorize a doctor
+        async function authorizeDoctor(doctorId) {
+             // Retrieve the token
+        // const token = localStorage.getItem('adminToken'); // Ensure token is available
+            try {
+                const res = await fetch(`http://localhost:5000/api/admin/authorize-doctor/${doctorId}`, {
+                    method: 'POST',
+                    headers: { 
+                    'Content-Type': 'application/json',
+                    // 'Authorization': `Bearer ${token}` // Include the token
+                },
+                    body: JSON.stringify({ status: 'authorized' })
+                });
+    
+                const data = await res.json();
+    
+                if (res.ok) {
+                    alert(`Doctor with ID ${doctorId} has been authorized.`);
+                    loadDoctorRegistrations(); // Reload the list to reflect changes
+                } else {
+                    alert(`Auth problem for Doctor with ID ${doctorId}: ` + data.message);
+                }
+            } catch (error) {
+                console.error('Error authorizing doctor:', error);
+                alert('Failed to authorize the doctor. Please try again.');
+            }
+        }
+    
+        // Function to reject a doctor
+        async function rejectDoctor(doctorId) {
+            try {
+                const res = await fetch(`http://localhost:5000/api/admin/reject-doctor/${doctorId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'rejected' })
+                });
+    
+                const data = await res.json();
+    
+                if (res.ok) {
+                    alert(`Doctor with ID ${doctorId} has been rejected.`);
+                    loadDoctorRegistrations(); // Reload the list to reflect changes
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('Error rejecting doctor:', error);
+                alert('Failed to reject the doctor. Please try again.');
+            }
+        }
+        
+        // Toggle the sidebar when the button is clicked
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        });
+    
+        // Initialize the patient admissions chart using Chart.js
+        const ctx = document.getElementById('patientChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Patient Admissions',
+                    data: [65, 59, 80, 81, 56, 55],
+                    borderColor: '#4a90e2',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Patient Admissions Over Time'
+                    }
+                }
+            }
+        });
+    
+        // Show the dashboard section by default when the page loads
+        showSection('dashboard');
+    </script>
+    
+</body>
+</html>

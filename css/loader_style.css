@@ -1,0 +1,115 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f7f7f7;
+}
+
+.hidden {
+  display: none;
+}
+
+#loader-container {
+    text-align: center;
+  }
+  
+  .loader {
+    display: block;
+    margin: 0 auto; /* Centers the loader horizontally */
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #512da8;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+  }
+  
+  p {
+    margin-top: 30px; /* Increase the gap between the loader and the text */
+    text-align: center;
+    font-size: 18px;
+    color: #333; /* Adjust the color if necessary */
+  }
+  
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Success Screen */
+#success-container {
+  text-align: center;
+}
+
+.success-box {
+  background: #B0DB7D;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  text-align: center;
+}
+
+.success-box h1 {
+  color: #4ec07d;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.success-box p {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #4ec07d;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #45b36a;
+}
+
+.checkmark {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: inline-block;
+  stroke-width: 5;
+  stroke: #fff;
+  stroke-miterlimit: 10;
+  margin-bottom: 10px;
+}
+
+.checkmark svg {
+  width: 100%;
+  height: 100%;
+}
+
+.checkmark path {
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: dash 1s forwards ease-out;
+}
+
+@keyframes dash {
+  0% {
+      stroke-dashoffset: 48;
+  }
+  100% {
+      stroke-dashoffset: 0;
+  }
+}

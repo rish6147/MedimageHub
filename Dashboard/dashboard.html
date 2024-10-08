@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor's Dashboard</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            height: 100%;
+            background-color: #f4f7fa;
+        }
+        .dashboard {
+            display: flex;
+            height: 100%;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .doctor-image {
+            width: 150px; 
+            height: 150px;
+            background-color: #34495e;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 48px;
+            color: #ecf0f1;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .menu {
+            list-style-type: none;
+            padding: 0;
+        }
+        .menu li {
+            margin-bottom: 10px;
+        }
+        .menu a {
+            text-decoration: none;
+            color: #ecf0f1;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .menu a:hover {
+            background-color: #34495e;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 30px;
+            background-color: #f4f7fa;
+            overflow-y: auto;
+        }
+        .content h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .patient-tiles {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .patient-tile {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .patient-tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .patient-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: #3498db;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+        }
+        .patient-info {
+            margin-top: 15px;
+            color: #7f8c8d;
+        }
+        .info-icon {
+            margin-right: 10px;
+            color: #3498db;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .status-stable { background-color: #2ecc71; }
+        .status-critical { background-color: #e74c3c; }
+        .status-recovering { background-color: #f39c12; }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="doctor-image">👨‍⚕️</div>
+            <ul class="menu">
+                <li><a href="#"><span class="menu-icon">🏠</span>Home</a></li>
+                <li><a href="#"><span class="menu-icon">📋</span>Patient Records</a></li>
+                <li><a href="#"><span class="menu-icon">📅</span>Appointments</a></li>
+                <li><a href="patientform.html"><span class="menu-icon">➕</span>Add Patient</a></li>
+                <li><a href="#"><span class="menu-icon">📊</span>Reports</a></li>
+                <li><a href="#"><span class="menu-icon">⚙️</span>Settings</a></li>
+            </ul>
+        </div>
+        <div class="content">
+            <h1>Patient Overview</h1>
+            <div class="patient-tiles"></div>
+        </div>
+    </div>
+    <script>
+        // Fetch patients from the API and display them
+        async function fetchPatients() {
+            try {
+                const response = await fetch('http://localhost:5000/api/patients');
+                const patients = await response.json();
+
+                const patientTiles = document.querySelector('.patient-tiles');
+                patientTiles.innerHTML = ''; // Clear previous patients
+
+                patients.forEach(patient => {
+                    const tile = `
+                        <div class="patient-tile">
+                            <h3><div class="patient-avatar">${patient.name[0]}</div>${patient.name}</h3>
+                            <div class="patient-info">
+                                <p><span class="info-icon">🆔</span>ID: ${patient.patientId}</p>
+                                <p><span class="info-icon">📅</span>Admitted: ${new Date(patient.admissionDate).toLocaleDateString()}</p>
+                                <p><span class="info-icon">🩺</span>Diagnosis: ${patient.diagnosis}</p>
+                                <p><span class="info-icon">💉</span>Treatment: ${patient.treatment}</p>
+                                <p><span class="status-indicator status-${patient.status.toLowerCase()}"></span>Status: ${patient.status}</p>
+                            </div>
+                        </div>
+                    `;
+                    patientTiles.innerHTML += tile;
+                });
+            } catch (error) {
+                console.error("Error fetching patients:", error);
+            }
+        }
+
+        // Call fetchPatients when the dashboard loads
+        window.onload = fetchPatients;
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Loader</title>
+    <link rel="stylesheet" href="../css/loader_style.css">
+</head>
+<body>
+    <div id="loader-container">
+        <div class="loader"></div>
+        <p>Registering, please wait...</p>
+    </div>
+
+    <div id="success-container" class="hidden">
+        <div class="success-box">
+            <div class="checkmark">
+                <svg viewBox="0 0 52 52">
+                    <path fill="none" d="M14 27l10 10L38 14"></path>
+                </svg>
+            </div>
+            <h1>Success!</h1>
+            <p>You have been registered successfully.</p>
+            <button onclick="proceed()">Continue</button>
+        </div>
+    </div>
+
+    <script src="../js/loader_script.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Patient - Doctor's Dashboard</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            height: 100%;
+            background-color: #f4f7fa;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-submit {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        .form-submit:hover {
+            background-color: #2980b9;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add New Patient</h1>
+        <form id="addPatientForm">
+            <div class="form-group">
+                <label for="patientName">Patient Name:</label>
+                <input type="text" id="patientName" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="patientId">Patient ID:</label>
+                <input type="text" id="patientId" name="patientId" required>
+            </div>
+            <div class="form-group">
+                <label for="admissionDate">Admission Date:</label>
+                <input type="date" id="admissionDate" name="admissionDate" required>
+            </div>
+            <div class="form-group">
+                <label for="diagnosis">Diagnosis:</label>
+                <input type="text" id="diagnosis" name="diagnosis" required>
+            </div>
+            <div class="form-group">
+                <label for="treatment">Treatment:</label>
+                <input type="text" id="treatment" name="treatment" required>
+            </div>
+            <div class="form-group">
+                <label for="status">Status:</label>
+                <select id="status" name="status" required>
+                    <option value="stable">Stable</option>
+                    <option value="recovering">Recovering</option>
+                    <option value="critical">Critical</option>
+                </select>
+            </div>
+            <button type="submit" class="form-submit">Add Patient</button>
+        </form>
+        <a href="index.html" class="back-link">← Back to Dashboard</a>
+    </div>
+
+    <script>
+        document.getElementById('addPatientForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+
+            // Collect form data
+            const patientData = {
+                name: document.getElementById('patientName').value,
+                patientId: document.getElementById('patientId').value,
+                admissionDate: document.getElementById('admissionDate').value,
+                diagnosis: document.getElementById('diagnosis').value,
+                treatment: document.getElementById('treatment').value,
+                status: document.getElementById('status').value,
+            };
+
+            try {
+                // Send data to the server
+                const response = await fetch('http://localhost:5000/api/patients/add', { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(patientData),
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert('Patient added successfully');
+                    // Optionally redirect to dashboard or reset form
+                    window.location.href = 'index.html'; // Redirect back to dashboard
+                } else {
+                    throw new Error('Error adding patient');
+                }
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+    </script>
+</body>
+</html>

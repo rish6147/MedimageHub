@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered Heading with Alternating Image and Text Layout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .header {
+            background: linear-gradient(135deg, #4dfd01, #7ff36f);
+            color: white;
+            text-align: center;
+            padding: 50px 0;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .content {
+            display: flex;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .image-container {
+            flex: 1;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+        }
+        .text-container {
+            flex: 1;
+            padding: 0 20px;
+        }
+        .reverse {
+            flex-direction: row-reverse;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Spectral Imaging</h1>
+    </div>
+    <div class="content">
+        <div class="image-container">
+            <img src="images/OIP (1).jpeg" alt="Placeholder Image 1">
+            <img src="images/RGB.png" alt="Placeholder Image 1">
+        </div>
+        <div class="text-container">
+            <h2>Spectral Imaging</h2>
+            <p>Definition and Technology: Spectral imaging, or imaging spectroscopy, merges traditional imaging techniques with spectroscopy to capture spatial and spectral information. In medicine, this means obtaining detailed data about the light interactions with tissues at various wavelengths, which can reveal characteristics not visible with standard imaging methods.</p>
+                <ul>
+                    <li>Categories:
+                <li>Multispectral Imaging: In a medical context, multispectral imaging might involve capturing images in a few broad wavelength bands. This can be useful for identifying different tissue types or detecting abnormalities based on the absorption and reflection of light in these specific bands.</li>
+                <li>Hyperspectral Imaging (HSI): Hyperspectral imaging collects data across hundreds of narrow, contiguous spectral bands. In medicine, this allows for more detailed analysis of tissue composition and function, aiding in the detection of diseases or conditions at a molecular level.</li>
+                <li>Ultraspectral Imaging: Even more advanced than hyperspectral, ultraspectral imaging captures an extensive range of wavelengths, providing a highly detailed spectral profile for each pixel. This can offer extremely precise information about tissue changes or disease progression.<br></li>
+                <li>Data Visualization: Spectral imaging data is often represented as a three-dimensional (3-D) cube, where one dimension corresponds to spatial coordinates (e.g., the x and y axes of an image) and another to the wavelength (the z axis). In medical imaging, this means doctors can analyze not just a two-dimensional image but also examine changes in spectral properties across different wavelengths, enhancing diagnostic capabilities.<br>
+                    </li>
+                <li>
+                Applications in Medicine:
+                Reflectance, Absorption, and Fluorescence: By capturing these properties for each pixel, spectral imaging can help detect biochemical changes in tissues. For example, it can identify variations in blood oxygen levels, detect cancerous tissues, or monitor cellular processes.
+                Early Detection and Diagnosis: Spectral imaging can reveal
+                hidden details about tissue composition and pathology that traditional imaging might miss. For instance, it can help in the early detection of diseases like cancer by identifying subtle changes in tissue reflectance or fluorescence.
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
