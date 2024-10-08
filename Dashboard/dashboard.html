@@ -163,22 +163,6 @@
                     `;
                     patientTiles.innerHTML += tile;
                 });
-
-                // patients.forEach(patient => {
-                //     const tile = `
-                //         <div class="patient-tile">
-                //             <h3><div class="patient-avatar">${patient.name[0]}</div>${patient.name}</h3>
-                //             <div class="patient-info">
-                //                 <p><span class="info-icon">🆔</span>ID: ${patient.patientId}</p>
-                //                 <p><span class="info-icon">📅</span>Admitted: ${new Date(patient.admissionDate).toLocaleDateString()}</p>
-                //                 <p><span class="info-icon">🩺</span>Diagnosis: ${patient.diagnosis}</p>
-                //                 <p><span class="info-icon">💉</span>Treatment: ${patient.treatment}</p>
-                //                 <p><span class="status-indicator status-${patient.status.toLowerCase()}"></span>Status: ${patient.status}</p>
-                //             </div>
-                //         </div>
-                //     `;
-                //     patientTiles.innerHTML += tile;
-                // });
             } catch (error) {
                 console.error("Error fetching patients:", error);
             }

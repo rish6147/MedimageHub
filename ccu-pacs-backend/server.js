@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const ffmpeg = require('fluent-ffmpeg');
+// const { trimVideo } = require('../controllers/videoController');
 
 // Initialize Express app
 const app = express();
@@ -20,11 +22,13 @@ mongoose.connect('mongodb://localhost:27017/pacs_demo', {
 // Import routes
 const authRoutes = require('./routes/auth');
 const patientRoutes = require('./routes/patient'); // Add patient routes
+const videoRoutes = require('./routes/videoRoutes'); // Add video routes
 
 // Use routes
 app.use(express.json());
 app.use('/api', authRoutes);
 app.use('/api/patients', patientRoutes); // Use patient routes
+app.use('/api/videos', videoRoutes); // Use video routes
 
 // admin
 const adminRoutes = require('./routes/admin');
