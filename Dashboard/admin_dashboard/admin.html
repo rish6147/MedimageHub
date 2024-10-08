@@ -275,8 +275,8 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <script>
-        // Function to show the selected section
         function showSection(sectionId) {
             // Hide all sections
             document.querySelectorAll('.section').forEach(section => {
@@ -286,107 +286,62 @@
             document.getElementById(sectionId).style.display = 'block';
             // Update section title
             document.getElementById('sectionTitle').textContent = sectionId.charAt(0).toUpperCase() + sectionId.slice(1);
-    
-            // If doctorRegistrations section is selected, load the pending doctors
+
             if (sectionId === 'doctorRegistrations') {
                 loadDoctorRegistrations();
             }
         }
-    
-        // Function to load pending doctor registrations from the backend
-        async function loadDoctorRegistrations() {
+
+        function loadDoctorRegistrations() {
             const container = document.getElementById('doctorRegistrationTiles');
             container.innerHTML = ''; // Clear existing tiles
-    
-            try {
-                const response = await fetch('http://localhost:5000/api/users',); // Ensure this endpoint is correct
-                if (!response.ok) {
-                    throw new Error('Failed to load doctor registrations');
-                }
-    
-                const pendingDoctors = await response.json();
-    
-                // Iterate over the doctor data and dynamically create tiles
-                pendingDoctors.forEach(doctor => {
-                    const tile = document.createElement('div');
-                    tile.className = 'tile';
-                    tile.innerHTML = `
-                        <div class="tile-header">${doctor.name} (ID: ${doctor.uniqueId})</div>
-                        <div class="tile-content">
-                            Specialty: ${doctor.specialty}
-                        </div>
-                        <button class="button" onclick="authorizeDoctor('${doctor.uniqueId}')">
-                            <i class="fas fa-check"></i> Authorize
-                        </button>
-                        <button class="button reject" onclick="rejectDoctor('${doctor.uniqueId}')">
-                            <i class="fas fa-times"></i> Reject
-                        </button>
-                    `;
-                    container.appendChild(tile);
-                });
-            } catch (error) {
-                console.error('Error loading doctor registrations:', error);
-                alert('Failed to load doctor registrations. Please try again later.');
-            }
+
+            // Simulated data - replace with actual API call
+            const pendingDoctors = [
+                { id: 1, name: 'Dr. John Doe', doctorId: '2021ABC001', specialty: 'Cardiology' },
+                { id: 2, name: 'Dr. Jane Smith', doctorId: '2021ABC002', specialty: 'Pediatrics' },
+                { id: 3, name: 'Dr. Mike Johnson', doctorId: '2021ABC003', specialty: 'Neurology' }
+            ];
+
+            pendingDoctors.forEach(doctor => {
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                tile.innerHTML = `
+                    <div class="tile-header">${doctor.name} (ID: ${doctor.doctorId})</div>
+                    <div class="tile-content">
+                        Specialty: ${doctor.specialty}
+                    </div>
+                    <button class="button" onclick="authorizeDoctor(${doctor.id})">
+                        <i class="fas fa-check"></i> Authorize
+                    </button>
+                    <button class="button reject" onclick="rejectDoctor(${doctor.id})">
+                        <i class="fas fa-times"></i> Reject
+                    </button>
+                `;
+                container.appendChild(tile);
+            });
         }
-    
-        // Function to authorize a doctor
-        async function authorizeDoctor(doctorId) {
-             // Retrieve the token
-        // const token = localStorage.getItem('adminToken'); // Ensure token is available
-            try {
-                const res = await fetch(`http://localhost:5000/api/admin/authorize-doctor/${doctorId}`, {
-                    method: 'POST',
-                    headers: { 
-                    'Content-Type': 'application/json',
-                    // 'Authorization': `Bearer ${token}` // Include the token
-                },
-                    body: JSON.stringify({ status: 'authorized' })
-                });
-    
-                const data = await res.json();
-    
-                if (res.ok) {
-                    alert(`Doctor with ID ${doctorId} has been authorized.`);
-                    loadDoctorRegistrations(); // Reload the list to reflect changes
-                } else {
-                    alert(`Auth problem for Doctor with ID ${doctorId}: ` + data.message);
-                }
-            } catch (error) {
-                console.error('Error authorizing doctor:', error);
-                alert('Failed to authorize the doctor. Please try again.');
-            }
+
+        function authorizeDoctor(doctorId) {
+            // Simulated authorization - replace with actual API call
+            console.log(`Authorizing doctor with ID: ${doctorId}`);
+            alert(`Doctor with ID ${doctorId} has been authorized.`);
+            loadDoctorRegistrations(); // Reload the list
         }
-    
-        // Function to reject a doctor
-        async function rejectDoctor(doctorId) {
-            try {
-                const res = await fetch(`http://localhost:5000/api/admin/reject-doctor/${doctorId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: 'rejected' })
-                });
-    
-                const data = await res.json();
-    
-                if (res.ok) {
-                    alert(`Doctor with ID ${doctorId} has been rejected.`);
-                    loadDoctorRegistrations(); // Reload the list to reflect changes
-                } else {
-                    alert(data.message);
-                }
-            } catch (error) {
-                console.error('Error rejecting doctor:', error);
-                alert('Failed to reject the doctor. Please try again.');
-            }
+
+        function rejectDoctor(doctorId) {
+            // Simulated rejection - replace with actual API call
+            console.log(`Rejecting doctor with ID: ${doctorId}`);
+            alert(`Doctor with ID ${doctorId} has been rejected.`);
+            loadDoctorRegistrations(); // Reload the list
         }
-        
-        // Toggle the sidebar when the button is clicked
+
+        // Toggle sidebar
         document.getElementById('toggleSidebar').addEventListener('click', function() {
             document.getElementById('sidebar').classList.toggle('collapsed');
         });
-    
-        // Initialize the patient admissions chart using Chart.js
+
+        // Initialize Chart
         const ctx = document.getElementById('patientChart').getContext('2d');
         new Chart(ctx, {
             type: 'line',
@@ -409,10 +364,9 @@
                 }
             }
         });
-    
-        // Show the dashboard section by default when the page loads
+
+        // Show dashboard by default
         showSection('dashboard');
     </script>
-    
 </body>
 </html>

@@ -2,7 +2,6 @@ const container = document.getElementById("container");
 const registerBtn = document.getElementById("register");
 const loginBtn = document.getElementById("login");
 
-// Toggle the forms for Sign In/Sign Up
 registerBtn.addEventListener("click", () => {
     container.classList.add("active");
 });
@@ -11,7 +10,7 @@ loginBtn.addEventListener("click", () => {
     container.classList.remove("active");
 });
 
-// Handle login functionality
+// Handle login
 document.getElementById('loginForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
@@ -31,25 +30,24 @@ document.getElementById('loginForm').addEventListener('submit', async function (
         if (res.ok) {
             alert('Login Successful!');
             console.log('Token:', data.token);
-            // Optionally, redirect to a dashboard or homepage after login
-            window.location.href = '/dashboard.html';
+            window.location.href = '../dashboard/dashboard.html'; // Redirect to dashboard
         } else {
-            alert(data.message); // Display error message if login fails
+            alert(data.message);
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Something went wrong during login.');
+        alert('Something went wrong!');
     }
 });
 
-// Handle signup functionality
+// Handle signup
 document.getElementById('signupForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
     const name = e.target.name.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
-    const uniqueId = e.target.uniqueId.value; // Unique ID field for signup
+    const role = e.target.role.value;
 
     try {
         const res = await fetch('http://localhost:5000/api/register', {
@@ -57,19 +55,18 @@ document.getElementById('signupForm').addEventListener('submit', async function 
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ name, email, password, uniqueId }), // Include uniqueId in the body
+            body: JSON.stringify({ name, email, password, role }),
         });
 
         const data = await res.json();
         if (res.ok) {
+            window.location.href = 'loader.html'; // Redirect to loader page
             console.log('Token:', data.token);
-            // Redirect to success loader or any other post-registration page
-            window.location.href = '../pages/loader.html';
         } else {
-            alert(data.message); // Display error message if signup fails
+            alert(data.message);
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Something went wrong during registration.');
+        alert('Something went wrong!');
     }
 });

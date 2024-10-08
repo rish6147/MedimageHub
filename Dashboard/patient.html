@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Details</title>
+    <style>
+        /* Styles for patient page */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .container h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .container p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .container h2 {
+            color: #444;
+            margin: 20px 0;
+        }
+
+        input[type="file"] {
+            display: none; /* Hide the input field */
+        }
+
+        label {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        label:hover {
+            background-color: #0056b3;
+        }
+
+        /* Styling for the video section */
+        #video-list {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        .video-item {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .video-item h3 {
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        video {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 50px;
+            border-radius: 10px;
+        }
+
+        /* Centering videos while scrolling */
+        .video-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="patient-name"></h1>
+        <p id="patient-info"></p>
+
+        <h2>Upload a new video</h2>
+        <form id="video-upload-form" enctype="multipart/form-data">
+            <label for="video">Choose Video</label>
+            <input type="file" id="video" name="video" accept="video/*" required>
+        </form>
+    </div>
+    <h2 class="container">Previous Videos</h2>
+    <div id="video-list"></div>
+
+    <script>
+        const patientId = new URLSearchParams(window.location.search).get('id');
+
+        // Fetch patient details and videos
+        async function fetchPatientDetails() {
+            const response = await fetch(`http://localhost:5000/api/patients/${patientId}`);
+            const patient = await response.json();
+
+            document.getElementById('patient-name').textContent = patient.name;
+            document.getElementById('patient-info').textContent = `
+                Diagnosis: ${patient.diagnosis}
+                Treatment: ${patient.treatment}
+                Admission Date: ${new Date(patient.admissionDate).toLocaleDateString()}
+                Status: ${patient.status}
+            `;
+
+            const videoList = document.getElementById('video-list');
+            videoList.innerHTML = ''; // Clear previous videos before appending new ones
+
+            // Display each video with a preview
+            patient.videos.forEach(video => {
+                const videoItem = document.createElement('div');
+                videoItem.className = 'video-item';
+                videoItem.innerHTML = `
+                    <h3>${video.filename}</h3>
+                    <video controls>
+                        <source src="../ccu-pacs-backend/${video.filePath}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                `;
+                // videoList.appendChild(videoItem); // Appends adds the video to the bottom of the list (oldest videos first)
+                videoList.prepend(videoItem);  // Prepend adds the video to the top of the list (recent videos first)
+            });
+        }
+
+        // Automatically submit the form when the file is selected
+        document.getElementById('video').addEventListener('change', async (e) => {
+            const formData = new FormData(document.getElementById('video-upload-form'));
+
+            try {
+                // Upload video to the server
+                const response = await fetch(`http://localhost:5000/api/patients/${patientId}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert('Video uploaded successfully!');
+                    fetchPatientDetails(); // Reload patient details to show the new video
+                } else {
+                    alert('Error uploading video. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred during upload.');
+            }
+        });
+
+        // Load patient details on page load
+        window.onload = fetchPatientDetails;
+    </script>
+</body>
+</html>

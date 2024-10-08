@@ -1,31 +1,21 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+var mongoose = require("mongoose");
+// var passportLocalMongoose = require("passport-local-mongoose");
+// var findOrCreate          = require("mongoose-findorcreate");
+// const comment = require("./comment");
 
-// Define Admin schema
-const adminSchema = new mongoose.Schema({
-  name: { type: String, required: true, trim: true },
-  emailId: { type: String, required: true, unique: true, lowercase: true, trim: true },
-  username: { type: String, required: true, unique: true, trim: true },
-  password: { type: String, required: true },
-}, {
-  timestamps: true // Adds createdAt and updatedAt fields
-});
+var adminSchema = new mongoose.Schema({
+    // name: { type: String, required: true },
+    name: String,
+    emailId: String,
+    username: String,
+    password: String,
+    // author: {
+    //     id:{
+    //         type: mongoose.Schema.Types.ObjectId,
+    //         ref : "User"
+    //     },
+    //     username: String
+    // }
+})
 
-// Hash password before saving the admin document
-adminSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next(); // Only hash if password is modified or new
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Compare password for login
-adminSchema.methods.comparePassword = async function (candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
-};
-
-module.exports = mongoose.model("Admin", adminSchema);
+module.exports = mongoose.model("Admin",adminSchema);

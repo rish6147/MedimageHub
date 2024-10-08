@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     // Simulate registration process
-    setTimeout(showSuccessScreen, 3000); // Change this timeout to match your actual registration time
+    setTimeout(showSuccessScreen, 1000); // Change this timeout to match your actual registration time
 });
 
 function showSuccessScreen() {

@@ -2,6 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const Patient = require("../models/Patient");
+const multer = require('multer');
 
 // Route to add a new patient
 router.post("/add", async (req, res) => {
@@ -23,7 +24,6 @@ router.post("/add", async (req, res) => {
         res.status(500).json({ message: "Server error", error });
     }
 });
-// routes/patient.js
 
 // Route to get all patients
 router.get("/", async (req, res) => {
@@ -34,5 +34,51 @@ router.get("/", async (req, res) => {
         res.status(500).json({ message: "Server error", error });
     }
 });
+
+// Multer setup for file storage
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/'); // Adjust the path as necessary
+    },
+    filename: function (req, file, cb) {
+      cb(null, Date.now() + '-' + file.originalname);
+    },
+  });
+const upload = multer({ storage });
+
+
+// Get specific patient details
+router.get('/:id', async (req, res) => {
+    try {
+      const patient = await Patient.findById(req.params.id);
+      if (!patient) {
+        return res.status(404).send('Patient not found');
+      }
+      res.json(patient);
+    } catch (error) {
+      res.status(500).send('Server error');
+    }
+  });
+
+// Upload video for a specific patient
+router.post('/:id/upload', upload.single('video'), async (req, res) => {
+    try {
+      const patient = await Patient.findById(req.params.id);
+      if (!patient) {
+        return res.status(404).send('Patient not found');
+      }
+  
+      const video = {
+        filename: req.file.filename,
+        filePath: req.file.path,
+      };
+
+      patient.videos.push(video);
+      await patient.save();
+      res.status(200).send('Video uploaded successfully');
+    } catch (error) {
+      res.status(500).send('Server error');
+    }
+  });
 
 module.exports = router;

@@ -97,7 +97,7 @@
             </div>
             <button type="submit" class="form-submit">Add Patient</button>
         </form>
-        <a href="index.html" class="back-link">← Back to Dashboard</a>
+        <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
     </div>
 
     <script>
@@ -128,7 +128,7 @@
                     const result = await response.json();
                     alert('Patient added successfully');
                     // Optionally redirect to dashboard or reset form
-                    window.location.href = 'index.html'; // Redirect back to dashboard
+                    window.location.href = 'dashboard.html'; // Redirect back to dashboard
                 } else {
                     throw new Error('Error adding patient');
                 }
