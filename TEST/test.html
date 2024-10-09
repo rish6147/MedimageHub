@@ -3,160 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Video Upload Page</title>
+    <title>My Taiwan Memories</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+        
+        body, html {
             margin: 0;
-            background-color: #f0f4f8;
-            color: #333;
+            padding: 0;
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f0f0f0;
+            overflow-x: hidden;
         }
-        .upload-container {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
             text-align: center;
-            max-width: 500px;
-            width: 100%;
-        }
-        h2 {
-            color: #2c3e50;
-            margin-bottom: 1.5rem;
-        }
-        #file-input {
-            display: none;
-        }
-        #upload-button {
-            background-color: #3498db;
-            border: none;
-            color: white;
-            padding: 12px 24px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        #upload-button:hover {
-            background-color: #2980b9;
-        }
-        #file-name {
-            margin-top: 1rem;
-            font-style: italic;
-            color: #7f8c8d;
-        }
-        #preview {
-            margin-top: 1rem;
-            max-width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        #progress-container {
-            margin-top: 1rem;
-            display: none;
-        }
-        #progress-bar {
-            width: 100%;
-            height: 20px;
-            background-color: #ecf0f1;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        #progress {
-            width: 0%;
-            height: 100%;
-            background-color: #2ecc71;
-            transition: width 0.3s;
-        }
-        #upload-status {
-            margin-top: 0.5rem;
-            font-weight: bold;
-        }
-        #error-message {
             color: #e74c3c;
-            margin-top: 1rem;
-            display: none;
+            font-size: 3em;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .memory-container {
+            position: relative;
+            margin-bottom: 100px;
+        }
+        .memory-shape {
+            width: 100%;
+            height: 400px;
+            background-color: #3498db;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 75% 100%, 0% 100%);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+        .memory-shape:hover {
+            transform: scale(1.05);
+        }
+        .memory-shape img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+            transition: opacity 0.5s ease;
+        }
+        .memory-shape:hover img {
+            opacity: 1;
+        }
+        .memory-text {
+            position: absolute;
+            bottom: -50px;
+            right: 20px;
+            background-color: white;
+            padding: 20px;
+            width: 60%;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        .memory-container:nth-child(even) .memory-shape {
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 25% 100%, 0% 75%);
+        }
+        .memory-container:nth-child(even) .memory-text {
+            left: 20px;
+            right: auto;
+        }
+        .memory-text h2 {
+            color: #e74c3c;
+            margin-top: 0;
+        }
+        .memory-text p {
+            color: #34495e;
+        }
+        .lantern {
+            position: absolute;
+            width: 50px;
+            height: 70px;
+            background-color: #e74c3c;
+            border-radius: 25px 25px 0 0;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 10;
+            animation: sway 3s ease-in-out infinite;
+        }
+        .lantern::before {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 10px;
+            background-color: #c0392b;
+            top: -10px;
+            left: -5px;
+            border-radius: 5px 5px 0 0;
+        }
+        .lantern::after {
+            content: '台';
+            position: absolute;
+            color: #fff;
+            font-size: 24px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        @keyframes sway {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            50% { transform: translateX(-50%) rotate(5deg); }
+        }
+        .visible .memory-text {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
-    <div class="upload-container">
-        <h2>Upload Your Video</h2>
-        <input type="file" id="file-input" accept="video/*">
-        <label for="file-input" id="upload-button">Choose Video</label>
-        <div id="file-name"></div>
-        <video id="preview" controls></video>
-        <div id="progress-container">
-            <div id="progress-bar">
-                <div id="progress"></div>
+    <div class="container">
+        <h1>我的台灣回憶</h1>
+
+        <div class="memory-container">
+            <div class="lantern"></div>
+            <div class="memory-shape">
+                <img src="../images/rovin-ferrer-lmoxyu1PXVU-unsplash.jpg" alt="Taipei 101">
             </div>
-            <div id="upload-status"></div>
+            <div class="memory-text">
+                <h2>Taipei 101: A Towering Experience</h2>
+                <p>Standing at the foot of Taipei 101, I was awestruck by its imposing height and unique design. The elevator ride to the observation deck was an experience in itself, and the panoramic view of Taipei city from the top was breathtaking. I remember how the setting sun painted the sky in vibrant hues, casting a golden glow over the bustling cityscape below.</p>
+            </div>
         </div>
-        <div id="error-message"></div>
+
+        <div class="memory-container">
+            <div class="lantern"></div>
+            <div class="memory-shape">
+                <img src="https://images.unsplash.com/photo-1577761754690-7047ecb2ab56" alt="Night Market">
+            </div>
+            <div class="memory-text">
+                <h2>Shilin Night Market: A Feast for the Senses</h2>
+                <p>The vibrant atmosphere of Shilin Night Market is something I'll never forget. The aroma of stinky tofu and grilled squid filled the air as I wandered through the maze-like alleys. I tried my hand at various carnival games and indulged in an array of street foods. The lively chatter of vendors and visitors created a symphony of urban life that encapsulated the essence of Taiwanese night markets.</p>
+            </div>
+        </div>
+
+        <div class="memory-container">
+            <div class="lantern"></div>
+            <div class="memory-shape">
+                <img src="https://images.unsplash.com/photo-1550845606-2d2a12e8e24f" alt="Taroko Gorge">
+            </div>
+            <div class="memory-text">
+                <h2>Taroko Gorge: Nature's Masterpiece</h2>
+                <p>Hiking through Taroko Gorge was like stepping into another world. The sheer marble cliffs, crystalline waters of the Liwu River, and lush vegetation created a landscape of unparalleled beauty. I remember the exhilaration of crossing suspension bridges and exploring hidden shrines nestled within the gorge. The tranquility of this natural wonder offered a stark contrast to the bustling cities, showcasing Taiwan's diverse landscapes.</p>
+            </div>
+        </div>
     </div>
 
     <script>
-        const fileInput = document.getElementById('file-input');
-        const fileName = document.getElementById('file-name');
-        const preview = document.getElementById('preview');
-        const progressContainer = document.getElementById('progress-container');
-        const progressBar = document.getElementById('progress');
-        const uploadStatus = document.getElementById('upload-status');
-        const errorMessage = document.getElementById('error-message');
-
-        fileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                if (file.type.startsWith('video/')) {
-                    fileName.textContent = `Selected file: ${file.name}`;
-                    errorMessage.style.display = 'none';
-                    
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        preview.src = e.target.result;
-                    }
-                    reader.readAsDataURL(file);
-
-                    // Simulate upload process
-                    simulateUpload(file);
-                } else {
-                    errorMessage.textContent = 'Please select a valid video file.';
-                    errorMessage.style.display = 'block';
-                    fileName.textContent = '';
-                    preview.src = '';
+        function checkVisibility() {
+            const containers = document.querySelectorAll('.memory-container');
+            containers.forEach(container => {
+                const rect = container.getBoundingClientRect();
+                const isVisible = (rect.top <= window.innerHeight * 0.75);
+                if (isVisible) {
+                    container.classList.add('visible');
                 }
-            }
-        });
-
-        function simulateUpload(file) {
-            progressContainer.style.display = 'block';
-            progressBar.style.width = '0%';
-            uploadStatus.textContent = 'Uploading...';
-
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 10;
-                if (progress > 100) progress = 100;
-                progressBar.style.width = `${progress}%`;
-                uploadStatus.textContent = `Uploading... ${Math.round(progress)}%`;
-
-                if (progress === 100) {
-                    clearInterval(interval);
-                    uploadStatus.textContent = 'Upload complete!';
-                    setTimeout(() => {
-                        progressContainer.style.display = 'none';
-                    }, 3000);
-                }
-            }, 500);
+            });
         }
+
+        window.addEventListener('load', checkVisibility);
+        window.addEventListener('scroll', checkVisibility);
     </script>
 </body>
 </html>

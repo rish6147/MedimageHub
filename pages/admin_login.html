@@ -322,6 +322,7 @@
             console.log('Token:', data.token);
             // Save the token and redirect to dashboard
             localStorage.setItem('adminToken', data.token);
+            // loadDoctorRegistrations(); // Load doctors after login
             window.location.href = '../Dashboard/admin_dashboard/admin.html';
         } else {
             alert(data.message);
