@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const ffmpeg = require('fluent-ffmpeg');
 
 // Initialize Express app
 const app = express();
@@ -25,15 +26,18 @@ const authRoutes = require('./routes/auth');
 const patientRoutes = require('./routes/patient');
 const adminRoutes = require('./routes/admin'); // Admin routes
 const User = require('./models/User');
+const videoRoutes = require('./routes/videoRoutes'); // Add video routes
 
 // Use routes
+app.use(express.json());
 app.use('/api', authRoutes);              // Auth routes (login/register)
 app.use('/api/patients', patientRoutes);  // Patient-related routes
 app.use('/api/admin', adminRoutes);       // Admin-related routes
+app.use('/api/videos', videoRoutes); // Use video routes
 
 // Basic test route
 app.get('/', (req, res) => {
-  res.send('We are the Best!');
+  res.send('<h1 style="color:blue">We are the Best!</h1>');
 });
 
 // Endpoint to get pending doctor registrations
@@ -54,7 +58,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000 || 5001;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

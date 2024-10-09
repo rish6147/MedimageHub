@@ -18,7 +18,7 @@ router.post("/register", async (req, res) => {
     // Check if user with the same email or uniqueId already exists
     const existingUser = await User.findOne({ $or: [{ email }, { uniqueId }] });
     if (existingUser) {
-      return res.status(400).json({ message: "Email or Unique ID already exists" });
+      return res.status(400).json({ message: "Email or Unique ID already exists!" });
     }
 
     // Create a new user with isApproved set to false and role 'doctor'
@@ -49,7 +49,7 @@ router.post("/register", async (req, res) => {
       token 
     });
   } catch (error) {
-    console.error(error);
+    console.error("Registration error:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -57,6 +57,11 @@ router.post("/register", async (req, res) => {
 // Login route
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
+
+  // Validate required fields
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and Password are required" });
+  }
 
   try {
     // Check if user exists
@@ -94,7 +99,7 @@ router.post("/login", async (req, res) => {
       token 
     });
   } catch (error) {
-    console.error(error);
+    console.error("Login error: ", error);
     res.status(500).json({ message: "Server error" });
   }
 });

@@ -7,14 +7,14 @@ const {
   authorizeDoctor,
   rejectDoctor,
 } = require("../controllers/adminController");
-const adminMiddleware = require("../middleware/adminMiddleware"); // Admin middleware
+// const adminMiddleware = require("../middleware/adminMiddleware"); // Admin middleware
 const router = express.Router();
 
 // Admin Login
 router.post("/login", adminLogin);
 
 // Apply adminMiddleware to all routes below
-router.use(adminMiddleware);
+// router.use(adminMiddleware);
 
 // Admin Dashboard
 router.get("/dashboard", getAdminDashboard);
