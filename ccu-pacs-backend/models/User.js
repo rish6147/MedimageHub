@@ -4,7 +4,6 @@ const bcrypt = require("bcryptjs");
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    username: { type: String, required: true, unique: true }, // Assuming admin uses username
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     uniqueId: { type: String, required: true, unique: true },
@@ -47,6 +46,7 @@ userSchema.statics.authorizeDoctor = async function (doctorId) {
     throw new Error("Doctor not found");
   }
 
+  // Update doctor approval status
   doctor.isApproved = true;
   await doctor.save();
   return "Doctor has been authorized";
@@ -59,6 +59,7 @@ userSchema.statics.rejectDoctor = async function (doctorId) {
     throw new Error("Doctor not found");
   }
 
+  // Delete the doctor if rejected
   await this.findByIdAndDelete(doctorId);
   return "Doctor has been rejected and removed";
 };

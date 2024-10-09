@@ -9,33 +9,6 @@ require('dotenv').config();
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret_key"; // Ensure this is set in your .env file
 
-// // Admin Login
-// exports.adminLogin = async (req, res) => {
-//   const { username, password } = req.body;
-
-//   try {
-//     const admin = await User.findOne({ username, role: 'admin' });
-//     if (!admin) {
-//       return res.status(400).json({ message: "Admin does not exist!" });
-//     }
-
-//     const isMatch = password === admin.password;
-//     if (!isMatch) {
-//       return res.status(400).json({ message: "Invalid credentials" });
-//     }
-
-//     const token = jwt.sign(
-//       { userId: admin._id, username: admin.username },
-//       JWT_SECRET,
-//       { expiresIn: "1h" }
-//     );
-
-//     res.status(200).json({ message: "Login successful", token });
-//   } catch (error) {
-//     console.error("Admin login error:", error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// };
 // Admin Login
 exports.adminLogin = async (req, res) => {
   const { username, password } = req.body;
@@ -80,58 +53,24 @@ exports.getPendingDoctors = async (req, res) => {
   }
 };
 
-// // Authorize a Doctor
-// exports.authorizeDoctor = async (doctorId) => {
-//   try {
-//     console.log("Doctor hahahhahaahahah")
-
-//     const doctor = await User.findOne({ role: 'doctor', uniqueId: doctorId });
-//     if (!doctor || doctor.role !== 'doctor') {
-//       return "Doctor not found";
-//     }
-
-//     doctor.isApproved = true;
-//     await doctor.save();
-//     console.log("Doctor auth")
-//     return "Doctor has been authorized";
-//   } catch (error) {
-//     console.error("Error authorizing doctor:", error);
-//     throw new Error("Failed to authorize doctor");
-//   }
-// };
-
-// // Reject a Doctor
-// exports.rejectDoctor = async (doctorId) => {
-//   try {
-//     const doctor = await User.findOne({ role: 'doctor', uniqueId: doctorId });
-//     // const doctor = await User.findById(doctorId);
-//     if (!doctor || doctor.role !== 'doctor') {
-//       return "Doctor not found";
-//     }
-
-//     await User.findByIdAndDelete(doctorId);
-
-//     return "Doctor has been rejected and removed";
-//   } catch (error) {
-//     console.error("Error rejecting doctor:", error);
-//     throw new Error("Failed to reject doctor");
-//   }
-// };
-
 // Authorize a Doctor
 exports.authorizeDoctor = async (doctorId) => {
   try {
     console.log("Authorizing doctor with uniqueId:", doctorId);
 
+    // Use findOne to get a single document
     const doctor = await User.findOne({ role: 'doctor', uniqueId: doctorId });
+    console.log("Doctor fetched:", doctor);
+
     if (!doctor) {
       return { success: false, message: "Doctor not found" };
     }
 
+    // Update the isApproved field
     doctor.isApproved = true;
-    await doctor.save();
+    await doctor.save(); // Save the updated document
+    console.log("Doctor authorized and saved successfully.");
 
-    console.log("Doctor authorized successfully.");
     return { success: true, message: "Doctor has been authorized" };
   } catch (error) {
     console.error("Error authorizing doctor:", error.message);

@@ -24,7 +24,7 @@
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
         }
         .doctor-image {
-            width: 150px; 
+            width: 150px;
             height: 150px;
             background-color: #34495e;
             border-radius: 50%;
@@ -147,9 +147,10 @@
                 const patientTiles = document.querySelector('.patient-tiles');
                 patientTiles.innerHTML = ''; // Clear previous patients
 
+                // dashboard.html (inside fetchPatients function)
                 patients.forEach(patient => {
                     const tile = `
-                        <div class="patient-tile">
+                        <div class="patient-tile" onclick="location.href='patient.html?id=${patient._id}'">
                             <h3><div class="patient-avatar">${patient.name[0]}</div>${patient.name}</h3>
                             <div class="patient-info">
                                 <p><span class="info-icon">🆔</span>ID: ${patient.patientId}</p>

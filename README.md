@@ -1,3 +1,3 @@
 "# MedImageHub" 
 
-Developed by Siddharth and Rishabh
+Developed by Siddharth and Rishabh.
