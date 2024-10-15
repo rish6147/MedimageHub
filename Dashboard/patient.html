@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Patient Details</title>
     <style>
-      /* General Styles */
       * {
         box-sizing: border-box;
         margin: 0;
@@ -100,7 +99,8 @@
         background-color: #218838;
       }
 
-      .trim-form {
+      .trim-form,
+      .operation-form {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -108,16 +108,17 @@
         margin-top: 10px;
       }
 
-      .trim-form label {
-        margin-right: 5px;
-      }
-
-      .trim-form input {
+      .trim-form input,
+      .operation-form select {
         width: 80px;
         padding: 5px;
         text-align: center;
         border-radius: 5px;
         border: 1px solid #ccc;
+      }
+
+      .operation-form select {
+        width: auto;
       }
 
       /* Loading Spinner */
@@ -189,7 +190,7 @@
         videoList.innerHTML = "";
         processedVideoList.innerHTML = "";
 
-        // Display each original video with a trimming form
+        // Display each original video with a trimming and operation form
         patient.videos.forEach((video) => {
           const videoItem = document.createElement("div");
           videoItem.className = "video-item";
@@ -205,6 +206,17 @@
                 <label for="end-time-${video._id}">End Time:</label>
                 <input type="number" id="end-time-${video._id}" min="0" placeholder="End time">
                 <button onclick="trimVideo('${video._id}', document.getElementById('start-time-${video._id}').value, document.getElementById('end-time-${video._id}').value)">Trim Video</button>
+            </div>
+            
+            <div class="operation-form">
+              <label for="operation-${video._id}">Select Operation:</label>
+              <select id="operation-${video._id}">
+                <option value="convert-to-images">Convert to Images</option>
+                <option value="cancerDetection">Cancer Detection</option>
+                <option value="superResolution">Super Resolution</option>
+                <option value="cancerClassification">Cancer Classification</option>
+              </select>
+              <button onclick="performOperation('${video._id}', document.getElementById('operation-${video._id}').value)">Process</button>
             </div>
           `;
           videoList.prepend(videoItem);
@@ -237,7 +249,41 @@
           }
         } catch (error) {
           console.error("Error:", error);
-          alert("An error occurred while trimming the video.");
+        }
+      }
+
+      async function performOperation(videoId, operation) {
+        try {
+          console.log("Selected operation:", operation);
+
+          const response = await fetch(
+            `http://localhost:5000/api/patients/${patientId}/videos/${videoId}/operation`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ operation }),
+            }
+          );
+
+          
+          if (response.ok) {
+            const data = await response.json();
+            alert(`${operation} executed successfully!`);
+
+            if (data.result === "video") {
+              alert("Processed Video Path: " + data.processedVideo.filePath);
+              // displayProcessedVideo(data.processedVideo.filePath);
+            } else {
+              console.log("Images Path: " + data.images);
+            }
+
+            // If operation result is video, show video, else display as needed.
+            fetchPatientDetails();
+          } else {
+            alert("Error executing operation.");
+          }
+        } catch (error) {
+          console.error("Error:", error);
         }
       }
 
@@ -256,36 +302,33 @@
             }
           );
 
-          document.getElementById("loading-spinner").style.display = "none";
-
           if (response.ok) {
+            const data = await response.json();
             alert("Video uploaded successfully!");
             fetchPatientDetails();
           } else {
-            alert("Error uploading video. Please try again.");
+            alert("Error uploading video.");
           }
         } catch (error) {
           console.error("Error:", error);
-          alert("An error occurred during upload.");
+        } finally {
           document.getElementById("loading-spinner").style.display = "none";
         }
       });
 
       function displayProcessedVideo(filePath) {
-        const processedVideoSection = document.getElementById(
-          "processed-video-list"
-        );
-
-        const videoItem = document.createElement("div");
-        videoItem.className = "video-item";
-        videoItem.innerHTML = `
-          <h3>Trimmed Video</h3>
+        const processedVideoItem = document.createElement("div");
+        processedVideoItem.className = "video-item";
+        processedVideoItem.innerHTML = `
+          <h3>Processed Video</h3>
           <video controls>
               <source src="../ccu-pacs-backend/${filePath}" type="video/mp4">
               Your browser does not support the video tag.
           </video>
         `;
-        processedVideoSection.prepend(videoItem);
+        document
+          .getElementById("processed-video-list")
+          .prepend(processedVideoItem);
       }
 
       fetchPatientDetails();
